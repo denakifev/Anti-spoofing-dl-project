@@ -1,5 +1,6 @@
 torch==2.8.0
-torchaudio
+torchaudio==2.8.0
+torchvision==0.23.0
 torchmetrics
 numpy==1.26.4
 tqdm
