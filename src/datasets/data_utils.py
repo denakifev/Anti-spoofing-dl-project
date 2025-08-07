@@ -39,6 +39,11 @@ def get_dataloaders(config, device):
     # dataloaders init
     dataloaders = {}
     for dataset_partition in config.datasets.keys():
+        print(
+            dataset_partition,
+            type(datasets[dataset_partition]),
+            datasets[dataset_partition],
+        )
         dataset = datasets[dataset_partition]
 
         assert config.dataloader.batch_size <= len(dataset), (
