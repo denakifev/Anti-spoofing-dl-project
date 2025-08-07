@@ -8,7 +8,7 @@ train:
   audio_folder: "ASVspoof2019_LA_train/flac"
 
 val:
-  _target_: src.datasetss.ASVspoofDataset
+  _target_: src.datasets.ASVspoofDataset
   la_root: ${datasets.la_root}
   shuffle_index: false
   use_stft: true
