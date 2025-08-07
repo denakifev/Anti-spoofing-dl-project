@@ -44,7 +44,6 @@ class ASVspoofDataset(BaseDataset):
                 window=window,
                 return_complex=True,
             )
-            print(f"Loaded waveform from {path} with shape {obj.shape}")
             obj = stft_complex.abs() ** self.stft_params.get("power", 2)
 
         obj = self._pad_with_random_or_crop(obj)
