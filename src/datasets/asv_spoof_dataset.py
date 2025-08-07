@@ -54,7 +54,7 @@ class ASVspoofDataset(BaseDataset):
         with open(protocol_path, "r") as f:
             for line in f:
                 parts = line.strip().split()
-                file_id = parts[0]
+                file_id = parts[1]
                 label_str = parts[-1].lower()
                 label = 1 if label_str == "bonafide" else 0
                 audio_path = os.path.join(audio_base_path, file_id + ".flac")

@@ -5,7 +5,7 @@ train:
   use_stft: true
   stft_params: ${dataset.stft_params}
   protocol_file: "ASVspoof2019.LA.cm.train.trn.txt"
-  audio_folder: "ASVspoof2019_LA_train"
+  audio_folder: "ASVspoof2019_LA_train/flac"
 
 val:
   _target_: src.datasets.ASVspoofDataset
@@ -14,7 +14,7 @@ val:
   use_stft: true
   stft_params: ${dataset.stft_params}
   protocol_file: "ASVspoof2019.LA.cm.dev.trl.txt"
-  audio_folder: "ASVspoof2019_LA_cm_protocols/ASVspoof2019_LA_dev"
+  audio_folder: "ASVspoof2019_LA_dev/flac"
 
 test:
   _target_: src.datasets.ASVspoofDataset
@@ -23,7 +23,7 @@ test:
   use_stft: true
   stft_params: ${dataset.stft_params}
   protocol_file: "ASVspoof2019.LA.cm.eval.trl.txt"
-  audio_folder: "ASVspoof2019_LA_cm_protocols/ASVspoof2019_LA_eval"
+  audio_folder: "ASVspoof2019_LA_eval/flac"
 
 stft_params:
   n_fft: 1024
