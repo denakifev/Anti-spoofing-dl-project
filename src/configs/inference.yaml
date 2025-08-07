@@ -1,6 +1,6 @@
 defaults:
-  - model: baseline
-  - metrics: example
+  - model: light_cnn
+  - metrics: metrics
   - datasets: example_eval # we do not want to run inference on training data
   - dataloader: example
   - transforms: example

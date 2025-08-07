@@ -1,7 +1,7 @@
 defaults:
-  - model: baseline
+  - model: light_cnn
   - writer: wandb
-  - metrics: example
+  - metrics: metrics
   - datasets: example
   - dataloader: example
   - transforms: example

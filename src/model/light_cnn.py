@@ -47,7 +47,7 @@ class LightCNN(nn.Module):
         data_object = data_object.view(data_object.size(0), -1)
         data_object = self.mlp1(data_object)
         data_object = self.mlp2(data_object)
-        return data_object
+        return {"logits": data_object}
 
     def __str__(self):
         all_parameters = sum([p.numel() for p in self.parameters()])
