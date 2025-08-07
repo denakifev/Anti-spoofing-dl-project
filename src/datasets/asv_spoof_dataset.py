@@ -31,7 +31,7 @@ class ASVspoofDataset(BaseDataset):
 
         super().__init__(index=index, **kwargs)
 
-    def load_object(self, path):
+    def __getitem__(self, path):
         waveform, sr = torchaudio.load(path)
 
         if self.use_stft:
