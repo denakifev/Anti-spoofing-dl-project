@@ -33,4 +33,4 @@ stft_params:
   return_complex: true
   power: 2
 
-la_root: "/root/.cache/kagglehub/datasets/awsaf49/asvpoof-2019-dataset/versions/1/LA/LA"
+la_root: "/la_root"

@@ -35,7 +35,7 @@ def get_dataloaders(config, device):
     """
     # dataset partitions init
     datasets = instantiate(config.datasets)  # instance transforms are defined inside
-
+    print(datasets)
     # dataloaders init
     dataloaders = {}
     for dataset_partition in config.datasets.keys():
