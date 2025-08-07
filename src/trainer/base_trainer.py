@@ -370,8 +370,11 @@ class BaseTrainer:
             if self.batch_transforms is None
             else self.batch_transforms.get(transform_type, None)
         )
-        for transform_name in transforms.keys():
-            batch[transform_name] = transforms[transform_name](batch[transform_name])
+        if transforms is not None:
+            for transform_name in transforms.keys():
+                batch[transform_name] = transforms[transform_name](
+                    batch[transform_name]
+                )
         return batch
 
     def _clip_grad_norm(self):
