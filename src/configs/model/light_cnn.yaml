@@ -10,8 +10,12 @@ conv_blocks:
   - { in_channels: 32, out_channels: 64,  kernel_size: 1, stride: 1, padding: 0, use_batchnorm: True }
   - { in_channels: 32, out_channels: 64,  kernel_size: 3, stride: 1, padding: 1, use_batchnorm: False }
 max_pooling_conf:
-  - { kernel_size: 2, stride: 2 }
+    kernel_size: 2
+    stride: 2
 mlp1_conf:
-  - { in_features: 62752, out_features: 160, use_batchnorm: True }
+    in_features: 62752
+    out_features: 160
+    use_batchnorm: True
 mlp2_conf:
-  - { in_features: 80, out_features: 2}
+    in_features: 80
+    out_features: 2

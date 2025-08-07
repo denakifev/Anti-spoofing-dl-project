@@ -8,27 +8,26 @@ class LightCNN(nn.Module):
         self.conv_blocks = nn.ModuleList(
             [
                 Convblock(
-                    in_channels,
-                    out_channels,
-                    kernel_size,
-                    stride,
-                    padding,
-                    use_batchnorm,
+                    block["in_channels"],
+                    block["out_channels"],
+                    block["kernel_size"],
+                    block["stride"],
+                    block["padding"],
+                    block.get("use_batchnorm", False),
                 )
-                for (
-                    in_channels,
-                    out_channels,
-                    kernel_size,
-                    stride,
-                    padding,
-                    use_batchnorm,
-                ) in conv_blocks
+                for block in conv_blocks
             ]
         )
 
-        self.max_pool = nn.MaxPool2d(**max_pooling_conf)
-        self.mlp1 = MLPblock(**mlp1_conf)
-        self.mlp2 = nn.Linear(**mlp2_conf)
+        self.max_pool = nn.MaxPool2d(
+            max_pooling_conf["kernel_size"], max_pooling_conf["stride"]
+        )
+        self.mlp1 = MLPblock(
+            mlp1_conf["in_features"],
+            mlp1_conf["out_features"],
+            mlp1_conf.get("use_batchnorm", True),
+        )
+        self.mlp2 = nn.Linear(mlp2_conf["in_features"], mlp2_conf["out_features"])
 
     def forward(self, data_object):
         data_object = self.conv_blocks[0](data_object)
