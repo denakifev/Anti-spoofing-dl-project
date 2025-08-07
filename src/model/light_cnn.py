@@ -1,5 +1,6 @@
-from torch import nn 
+from torch import nn
 import torch
+
 
 class LightCNN(nn.Module):
     def __init__(self, conv_blocks, max_pooling_conf, mlp1_conf, mlp2_conf):
@@ -32,9 +33,20 @@ class LightCNN(nn.Module):
         data_object = self.mlp2(data_object)
         return data_object
 
+    def __str__(self):
+        all_parameters = sum([p.numel() for p in self.parameters()])
+        trainable_parameters = sum(
+            [p.numel() for p in self.parameters() if p.requires_grad]
+        )
+
+        result_info = super().__str__()
+        result_info = result_info + f"\nAll parameters: {all_parameters}"
+        result_info = result_info + f"\nTrainable parameters: {trainable_parameters}"
+
+        return result_info
 
 
-class MFM(nn.Module): 
+class MFM(nn.Module):
     def __init__(self):
         super().__init__()
 
@@ -45,7 +57,8 @@ class MFM(nn.Module):
             return data_object.max(dim=1).values
         elif data_object.dim() == 4:
             return torch.maximum(data_object[:, ::2, :, :], data_object[:, 1::2, :, :])
-    
+
+
 class Convblock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride, padding, use_batchnorm):
         super().__init__()
@@ -61,7 +74,8 @@ class Convblock(nn.Module):
         if self.bn is not None:
             data_object = self.bn(data_object)
         return data_object
-    
+
+
 class MLPblock(nn.Module):
     def __init__(self, in_features, out_features, use_batchnorm=True):
         super().__init__()
@@ -77,4 +91,3 @@ class MLPblock(nn.Module):
         if self.bn is not None:
             data_object = self.bn(data_object)
         return data_object
-    
