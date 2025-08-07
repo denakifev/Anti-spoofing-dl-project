@@ -14,7 +14,7 @@ class ASVspoofDataset(BaseDataset):
         audio_folder,
         use_stft=False,
         stft_params=None,
-        **kwargs
+        **kwargs,
     ):
         protocol_path = os.path.join(
             la_root, "ASVspoof2019_LA_cm_protocols", protocol_file
@@ -46,7 +46,7 @@ class ASVspoofDataset(BaseDataset):
             )
             magnitude_squared = stft_complex.abs() ** self.stft_params.get("power", 2)
             return magnitude_squared
-
+        print(f"Loaded waveform from {path} with shape {waveform.shape}")
         return waveform
 
     def _make_index(self, protocol_path, audio_base_path):
