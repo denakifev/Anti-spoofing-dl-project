@@ -29,7 +29,7 @@ class LightCNN(nn.Module):
         )
         self.mlp2 = nn.Linear(mlp2_conf["in_features"], mlp2_conf["out_features"])
 
-    def forward(self, data_object):
+    def forward(self, data_object, **batch):
         data_object = self.conv_blocks[0](data_object)
         data_object = self.max_pool(data_object)
         data_object = self.conv_blocks[1](data_object)

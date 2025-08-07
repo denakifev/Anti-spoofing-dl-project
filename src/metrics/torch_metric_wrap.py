@@ -10,6 +10,6 @@ class Metric(BaseMetric):
             device = "cuda" if torch.cuda.is_available() else "cpu"
         self.metric = metric.to(device)
 
-    def __call__(self, logits: torch.Tensor, labels: torch.Tensor, **kwargs):
+    def __call__(self, logits: torch.Tensor, labels: torch.Tensor, **batch):
         classes = logits.argmax(dim=-1)
         return self.metric(classes, labels)
