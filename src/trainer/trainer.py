@@ -34,6 +34,7 @@ class Trainer(BaseTrainer):
             metric_funcs = self.metrics["train"]
             self.optimizer.zero_grad()
 
+        print(batch["data_object"].shape, batch["labels"].shape)
         outputs = self.model(**batch)
         batch.update(outputs)
 
