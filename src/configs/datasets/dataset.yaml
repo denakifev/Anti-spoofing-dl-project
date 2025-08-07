@@ -1,0 +1,34 @@
+train:
+  _target_: src.datasets.ASVspoofDataset
+  la_root: "/path/to/ASVspoof2019_root/LA"
+  shuffle_index: true
+  use_stft: true
+  stft_params: ${dataset.stft_params}
+  protocol_file: "ASVspoof2019.LA.cm.train.trn.txt"
+  audio_folder: "ASVspoof2019_LA_train"
+
+val:
+  _target_: src.datasets.ASVspoofDataset
+  la_root: "/path/to/ASVspoof2019_root/LA"
+  shuffle_index: false
+  use_stft: true
+  stft_params: ${dataset.stft_params}
+  protocol_file: "ASVspoof2019.LA.cm.dev.trl.txt"
+  audio_folder: "ASVspoof2019_LA_cm_protocols/ASVspoof2019_LA_dev"
+
+test:
+  _target_: src.datasets.ASVspoofDataset
+  la_root: "/path/to/ASVspoof2019_root/LA"
+  shuffle_index: false
+  use_stft: true
+  stft_params: ${dataset.stft_params}
+  protocol_file: "ASVspoof2019.LA.cm.eval.trl.txt"
+  audio_folder: "ASVspoof2019_LA_cm_protocols/ASVspoof2019_LA_eval"
+
+stft_params:
+  n_fft: 1024
+  hop_length: 160
+  win_length: 400
+  window: "hamming"
+  return_complex: true
+  power: 2

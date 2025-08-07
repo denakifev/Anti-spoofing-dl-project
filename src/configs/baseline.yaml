@@ -2,22 +2,23 @@ defaults:
   - model: light_cnn
   - writer: wandb
   - metrics: metrics
-  - datasets: example
-  - dataloader: example
-  - transforms: example
+  - datasets: datasets
+  - dataloader: dataloader
   - _self_
 optimizer:
   _target_: torch.optim.Adam
   lr: 3e-4
+  betas: [0.9, 0.999]
+  eps: 1e-8
 lr_scheduler:
   _target_: torch.optim.lr_scheduler.StepLR
-  gamma: 0.9
-  step_size: ${trainer.epoch_len}
+  step_size: 10
+  gamma: 0.5
 loss_function:
-  _target_: src.loss.ExampleLoss
+  _target_: src.loss.CrossEntopyLoss
 trainer:
   log_step: 50
-  n_epochs: 100
+  n_epochs: 20
   epoch_len: 500
   device_tensors: ["data_object", "labels"] # which tensors should be on device (ex. GPU)
   resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml

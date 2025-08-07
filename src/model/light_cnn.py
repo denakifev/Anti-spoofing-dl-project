@@ -84,6 +84,9 @@ class Convblock(nn.Module):
     ):
         super().__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, kernel_size, stride, padding)
+        nn.init.kaiming_normal_(self.conv.weight, nonlinearity="relu")
+        if self.conv.bias is not None:
+            nn.init.constant_(self.conv.bias, 0)
         self.mfm = MFM()
         self.bn = None
         if use_batchnorm:
@@ -101,7 +104,11 @@ class MLPblock(nn.Module):
     def __init__(self, in_features, out_features, use_batchnorm=True):
         super().__init__()
         self.fc = nn.Linear(in_features, out_features)
+        nn.init.kaiming_normal_(self.fc.weight, nonlinearity="relu")
+        if self.fc.bias is not None:
+            nn.init.constant_(self.fc.bias, 0)
         self.mfm = MFM()
+        self.dropout = nn.Dropout(0.75)
         self.bn = None
         if use_batchnorm:
             self.bn = nn.BatchNorm1d(out_features // 2)
@@ -109,6 +116,7 @@ class MLPblock(nn.Module):
     def forward(self, data_object):
         data_object = self.fc(data_object)
         data_object = self.mfm(data_object)
+        data_object = self.dropout(data_object)
         if self.bn is not None:
             data_object = self.bn(data_object)
         return data_object
