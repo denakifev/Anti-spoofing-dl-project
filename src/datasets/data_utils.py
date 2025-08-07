@@ -35,15 +35,16 @@ def get_dataloaders(config, device):
     """
     # dataset partitions init
     datasets = instantiate(config.datasets)  # instance transforms are defined inside
-    print(datasets)
     # dataloaders init
     dataloaders = {}
     for dataset_partition in config.datasets.keys():
-        print(
-            dataset_partition,
-            type(datasets[dataset_partition]),
-            datasets[dataset_partition],
-        )
+        if dataset_partition not in [
+            "train",
+            "val",
+            "test",
+        ]:
+            continue
+
         dataset = datasets[dataset_partition]
 
         assert config.dataloader.batch_size <= len(dataset), (
