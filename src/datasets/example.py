@@ -67,7 +67,7 @@ class ExampleDataset(BaseDataset):
         print("Creating Example Dataset")
         for i in tqdm(range(dataset_length)):
             # create dataset
-            example_path = data_path / f"{i:0{number_of_zeros}d}.pt"
+            example_path = data_path / f"{i: 0{number_of_zeros}d}.pt"
             example_data = torch.randn(input_length)
             example_label = torch.randint(n_classes, size=(1,)).item()
             torch.save(example_data, example_path)
