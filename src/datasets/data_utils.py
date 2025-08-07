@@ -18,31 +18,6 @@ def inf_loop(dataloader):
         yield from loader
 
 
-def move_batch_transforms_to_device(batch_transforms, device):
-    """
-    Move batch_transforms to device.
-
-    Notice that batch transforms are applied on the batch
-    that may be on GPU. Therefore, it is required to put
-    batch transforms on the device. We do it here.
-
-    Batch transforms are required to be an instance of nn.Module.
-    If several transforms are applied sequentially, use nn.Sequential
-    in the config (not torchvision.Compose).
-
-    Args:
-        batch_transforms (dict[Callable] | None): transforms that
-            should be applied on the whole batch. Depend on the
-            tensor name.
-        device (str): device to use for batch transforms.
-    """
-    for transform_type in batch_transforms.keys():
-        transforms = batch_transforms.get(transform_type)
-        if transforms is not None:
-            for transform_name in transforms.keys():
-                transforms[transform_name] = transforms[transform_name].to(device)
-
-
 def get_dataloaders(config, device):
     """
     Create dataloaders for each of the dataset partitions.
@@ -58,10 +33,6 @@ def get_dataloaders(config, device):
             should be applied on the whole batch. Depend on the
             tensor name.
     """
-    # transforms or augmentations init
-    batch_transforms = instantiate(config.transforms.batch_transforms)
-    move_batch_transforms_to_device(batch_transforms, device)
-
     # dataset partitions init
     datasets = instantiate(config.datasets)  # instance transforms are defined inside
 
@@ -85,4 +56,4 @@ def get_dataloaders(config, device):
         )
         dataloaders[dataset_partition] = partition_dataloader
 
-    return dataloaders, batch_transforms
+    return dataloaders

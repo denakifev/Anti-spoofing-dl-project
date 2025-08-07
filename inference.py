@@ -30,8 +30,7 @@ def main(config):
         device = config.inferencer.device
 
     # setup data_loader instances
-    # batch_transforms should be put on device
-    dataloaders, batch_transforms = get_dataloaders(config, device)
+    dataloaders = get_dataloaders(config, device)
 
     # build model architecture, then print to console
     model = instantiate(config.model).to(device)
@@ -49,7 +48,6 @@ def main(config):
         config=config,
         device=device,
         dataloaders=dataloaders,
-        batch_transforms=batch_transforms,
         save_path=save_path,
         metrics=metrics,
         skip_model_load=False,

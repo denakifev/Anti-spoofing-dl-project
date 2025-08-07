@@ -34,8 +34,7 @@ def main(config):
         device = config.trainer.device
 
     # setup data_loader instances
-    # batch_transforms should be put on device
-    dataloaders, batch_transforms = get_dataloaders(config, device)
+    dataloaders = get_dataloaders(config, device)
 
     # build model architecture, then print to console
     model = instantiate(config.model).to(device)
@@ -66,7 +65,6 @@ def main(config):
         epoch_len=epoch_len,
         logger=logger,
         writer=writer,
-        batch_transforms=batch_transforms,
         skip_oom=config.trainer.get("skip_oom", True),
     )
 

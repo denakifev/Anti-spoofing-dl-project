@@ -32,22 +32,23 @@ class ASVspoofDataset(BaseDataset):
         super().__init__(index=index, **kwargs)
 
     def load_object(self, path):
-        waveform, sr = torchaudio.load(path)
+        obj, _ = torchaudio.load(path)
 
         if self.use_stft:
             window = torch.hamming_window(self.stft_params["win_length"])
             stft_complex = torch.stft(
-                waveform,
+                obj,
                 n_fft=self.stft_params["n_fft"],
                 hop_length=self.stft_params["hop_length"],
                 win_length=self.stft_params["win_length"],
                 window=window,
                 return_complex=True,
             )
-            print(f"Loaded waveform from {path} with shape {waveform.shape}")
-            magnitude_squared = stft_complex.abs() ** self.stft_params.get("power", 2)
-            return magnitude_squared
-        return waveform
+            print(f"Loaded waveform from {path} with shape {obj.shape}")
+            obj = stft_complex.abs() ** self.stft_params.get("power", 2)
+
+        obj = self._pad_with_random_or_crop(obj)
+        return obj
 
     def _make_index(self, protocol_path, audio_base_path):
         index = []
@@ -66,3 +67,22 @@ class ASVspoofDataset(BaseDataset):
                 )
 
         return index
+
+    def _pad_with_random_or_crop(self, tensor, target_height=863, target_width=600):
+        c, h, w = tensor.shape
+
+        output = torch.rand(
+            (c, target_height, target_width), dtype=tensor.dtype, device=tensor.device
+        )
+
+        insert_h = min(h, target_height)
+        insert_w = min(w, target_width)
+
+        start_h = (target_height - insert_h) // 2
+        start_w = 0
+
+        output[:, start_h : start_h + insert_h, start_w : start_w + insert_w] = tensor[
+            :, :insert_h, :insert_w
+        ]
+
+        return output
