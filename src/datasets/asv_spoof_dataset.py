@@ -44,9 +44,9 @@ class ASVspoofDataset(BaseDataset):
                 window=window,
                 return_complex=True,
             )
+            print(f"Loaded waveform from {path} with shape {waveform.shape}")
             magnitude_squared = stft_complex.abs() ** self.stft_params.get("power", 2)
             return magnitude_squared
-        print(f"Loaded waveform from {path} with shape {waveform.shape}")
         return waveform
 
     def _make_index(self, protocol_path, audio_base_path):
