@@ -1,0 +1,34 @@
+train:
+  _target_: src.datasets.ASVspoofDataset
+  la_root: ${datasets.la_root}
+  shuffle_index: true
+  use_stft: true
+  stft_params: ${datasets.stft_params}
+  protocol_file: "ASVspoof2019.LA.cm.train.trn.txt"
+  audio_folder: "ASVspoof2019_LA_train/flac"
+
+val:
+  _target_: src.datasets.ASVspoofDataset
+  la_root: ${datasets.la_root}
+  shuffle_index: false
+  use_stft: true
+  stft_params: ${datasets.stft_params}
+  protocol_file: "ASVspoof2019.LA.cm.dev.trl.txt"
+  audio_folder: "ASVspoof2019_LA_dev/flac"
+
+test:
+  _target_: src.datasets.ASVspoofDataset
+  la_root: ${datasets.la_root}
+  shuffle_index: false
+  use_stft: true
+  stft_params: ${datasets.stft_params}
+  protocol_file: "ASVspoof2019.LA.cm.eval.trl.txt"
+  audio_folder: "ASVspoof2019_LA_eval/flac"
+
+stft_params:
+  n_fft: 1724
+  hop_length: 130
+  win_length: 1724
+  return_complex: True
+
+la_root: "/kaggle/input/asvpoof-2019-dataset/LA/LA"

@@ -1,0 +1,19 @@
+device: "auto"
+train:
+  - _target_: src.metrics.Metric
+    metric:
+      _target_: torchmetrics.classification.MulticlassAccuracy
+      num_classes: 2
+    device: ${metrics.device}
+    name: "TRAIN_MulticlassAccuracy"
+inference:
+  - _target_: src.metrics.Metric
+    metric:
+      _target_: torchmetrics.classification.MulticlassAccuracy
+      num_classes: 2
+    device: ${metrics.device}
+    name: "MulticlassAccuracy"
+  - _target_: src.metrics.ErrMetric
+    device: ${metrics.device}
+    name: "Err_metric"
+    is_accumulate: True

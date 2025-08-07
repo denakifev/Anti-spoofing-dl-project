@@ -1,0 +1,15 @@
+torch==2.8.0
+torchaudio==2.8.0
+torchvision==0.23.0
+torchmetrics
+numpy==1.26.4
+tqdm
+matplotlib
+pandas
+wandb
+comet_ml
+hydra-core
+
+black
+isort
+pre-commit

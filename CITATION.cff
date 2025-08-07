@@ -1,0 +1,8 @@
+cff-version: 1.2.0
+message: "If you use this template, please cite it as below."
+title: "PyTorch Voice Anti Spoofing Project"
+authors:
+  - family-names: Akifev
+    given-names: Denis
+date-released: 2025-08-12
+url: https://github.com/denakifev/Anti-spoofing-dl-project

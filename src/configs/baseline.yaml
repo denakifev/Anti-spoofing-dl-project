@@ -1,0 +1,31 @@
+defaults:
+  - model: light_cnn
+  - writer: wandb
+  - metrics: metrics
+  - datasets: datasets
+  - dataloader: dataloader
+  - _self_
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 3e-4
+  betas: [0.9, 0.999]
+  eps: 1e-8
+lr_scheduler:
+  _target_: torch.optim.lr_scheduler.StepLR
+  step_size: 1500
+  gamma: 0.5
+loss_function:
+  _target_: src.loss.CrossEntropyLoss
+trainer:
+  log_step: 100
+  n_epochs: 3
+  device_tensors: ["data_object", "labels"] # which tensors should be on device (ex. GPU)
+  resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml
+  device: auto # device name or "auto"
+  override: False # if True, will override the previous run with the same name
+  epoch_len: null
+  monitor: "min val_Err_metric" # "off" or "max/min metric_name", i.e. our goal is to maximize/minimize metric
+  save_period: 5 # checkpoint each save_period epochs in addition to the best epoch
+  early_stop: ${trainer.n_epochs} # epochs for early stopping
+  save_dir: "saved"
+  seed: 1
