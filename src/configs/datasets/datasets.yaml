@@ -1,27 +1,27 @@
 train:
-  _target_: src.datasets.ASVspoofDataset
-  la_root: "/path/to/ASVspoof2019_root/LA"
+  _target_: src.datasetss.ASVspoofDataset
+  la_root: ${datasets.la_root}
   shuffle_index: true
   use_stft: true
-  stft_params: ${dataset.stft_params}
+  stft_params: ${datasets.stft_params}
   protocol_file: "ASVspoof2019.LA.cm.train.trn.txt"
   audio_folder: "ASVspoof2019_LA_train/flac"
 
 val:
-  _target_: src.datasets.ASVspoofDataset
-  la_root: "/path/to/ASVspoof2019_root/LA"
+  _target_: src.datasetss.ASVspoofDataset
+  la_root: ${datasets.la_root}
   shuffle_index: false
   use_stft: true
-  stft_params: ${dataset.stft_params}
+  stft_params: ${datasets.stft_params}
   protocol_file: "ASVspoof2019.LA.cm.dev.trl.txt"
   audio_folder: "ASVspoof2019_LA_dev/flac"
 
 test:
-  _target_: src.datasets.ASVspoofDataset
-  la_root: "/path/to/ASVspoof2019_root/LA"
+  _target_: src.datasetss.ASVspoofDataset
+  la_root: ${datasets.la_root}
   shuffle_index: false
   use_stft: true
-  stft_params: ${dataset.stft_params}
+  stft_params: ${datasets.stft_params}
   protocol_file: "ASVspoof2019.LA.cm.eval.trl.txt"
   audio_folder: "ASVspoof2019_LA_eval/flac"
 
@@ -32,3 +32,5 @@ stft_params:
   window: "hamming"
   return_complex: true
   power: 2
+
+la_root: "/root/.cache/kagglehub/datasets/awsaf49/asvpoof-2019-dataset/versions/1/LA/LA"
