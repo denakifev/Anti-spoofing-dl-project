@@ -27,7 +27,6 @@ class LightCNN(nn.Module):
             mlp1_conf["out_features"],
             mlp1_conf.get("use_batchnorm", True),
         )
-        self.mlp2 = nn.Linear(mlp2_conf["in_features"], mlp2_conf["out_features"])
 
     def forward(self, data_object, **batch):
         data_object = self.conv_blocks[0](data_object)
@@ -45,8 +44,7 @@ class LightCNN(nn.Module):
         data_object = self.max_pool(data_object)
         data_object = data_object.view(data_object.size(0), -1)
         data_object = self.mlp1(data_object)
-        data_object = self.mlp2(data_object)
-        return {"logits": data_object}
+        return {"features": data_object}
 
     def __str__(self):
         all_parameters = sum([p.numel() for p in self.parameters()])
