@@ -71,7 +71,7 @@ class ASVspoofDataset(BaseDataset):
 
         return index
 
-    def _pad_with_random_or_crop(self, tensor, target_time=600):
+    def _pad_or_crop_time(self, tensor, target_time=600):
         c, f, t = tensor.shape
 
         output = torch.zeros(
