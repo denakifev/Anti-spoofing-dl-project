@@ -16,3 +16,4 @@ inference:
   - _target_: src.metrics.ErrMetric
     device: ${metrics.device}
     name: "Err_metric"
+    is_accumulate: True
