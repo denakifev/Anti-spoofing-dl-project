@@ -88,3 +88,22 @@ class MetricTracker:
             metric_keys (Index): all metric names in the table.
         """
         return self._data.total.keys()
+
+    def result(self):
+        """
+        Return average value of each metric.
+
+        Returns:
+            average_metrics (dict): dict, containing average metrics
+                for each metric name.
+        """
+        results = {}
+
+        for key in self._data.index:
+            metric = self.metric_funcs.get(key, None)
+            if metric is not None and getattr(metric, "is_accumulate", False):
+                results[key] = self.compute_accumulated(key, metric)
+            else:
+                results[key] = self._data.average[key]
+
+        return results
