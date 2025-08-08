@@ -21,9 +21,6 @@ def compute_det_curve(target_scores, nontarget_scores):
     labels = np.concatenate(
         (np.ones(target_scores.size), np.zeros(nontarget_scores.size))
     )
-    print(
-        f"Scores: {all_scores.shape}, Labels: {labels.shape}, targets: {target_scores.size}, nontargets: {nontarget_scores.size}"
-    )
     indices = np.argsort(all_scores, kind="mergesort")
     labels = labels[indices]
 

@@ -63,9 +63,9 @@ class MetricTracker:
         return self._data.average[key]
 
     def accumulate(self, key, preds, labels=None):
-        self._accumulate_preds[key].append(preds)
+        self._accumulate_preds[key].append(preds.detach().cpu())
         if labels is not None:
-            self._accumulate_labels[key].append(labels)
+            self._accumulate_labels[key].append(labels.detachU().cpu())
 
     def compute_accumulated(self, key, metric_func):
         all_preds = (
