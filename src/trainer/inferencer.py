@@ -70,10 +70,12 @@ class Inferencer(BaseTrainer):
 
         # define metrics
         self.metrics = metrics
+        self.metric_funcs = self.metrics["inference"]
         if self.metrics is not None:
             self.evaluation_metrics = MetricTracker(
                 *[m.name for m in self.metrics["inference"]],
                 writer=None,
+                metric_funcs=self.metric_funcs,
             )
         else:
             self.evaluation_metrics = None
