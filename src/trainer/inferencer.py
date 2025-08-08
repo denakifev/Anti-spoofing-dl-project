@@ -126,6 +126,8 @@ class Inferencer(BaseTrainer):
         outputs = self.model(**batch)
         batch.update(outputs)
 
+        metrics.accumulate(batch["logits"], batch.get("labels"))
+
         if metrics is not None:
             for met in self.metrics["inference"]:
                 if not hasattr(met, "is_accumulate") or not met.is_accumulate:
