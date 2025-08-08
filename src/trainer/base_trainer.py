@@ -279,8 +279,9 @@ class BaseTrainer:
             self._log_batch(
                 batch_idx, batch, part
             )  # log only the last batch during inference
-
-        return self.evaluation_metrics.result()
+        results = self.evaluation_metrics.result()
+        self._log_scalars(self.evaluation_metrics)
+        return results
 
     def _monitor_performance(self, logs, not_improved_count):
         """
