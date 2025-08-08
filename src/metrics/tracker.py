@@ -67,8 +67,8 @@ class MetricTracker:
 
     def compute_accumulated(self, key, metric_func):
         all_preds, all_labels = (
-            torch.cat(self._preds, dim=0).cpu().numpy(),
-            torch.cat(self._labels, dim=0).cpu().numpy(),
+            torch.cat(self._preds, dim=0).cpu(),
+            torch.cat(self._labels, dim=0).cpu(),
         )
 
         if len(all_preds) == 0 or len(all_labels) == 0:
