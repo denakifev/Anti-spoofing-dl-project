@@ -1,3 +1,5 @@
+import csv
+
 import torch
 from tqdm.auto import tqdm
 
@@ -67,6 +69,8 @@ class Inferencer(BaseTrainer):
         # path definition
 
         self.save_path = save_path
+        if self.save_path is not None:
+            self.csv_file = self.save_path / "daakifev.csv"
 
         # define metrics
         self.metrics = metrics
@@ -144,7 +148,8 @@ class Inferencer(BaseTrainer):
             # https://github.com/pytorch/pytorch/issues/1995
             logits = batch["logits"][i].clone()
             label = batch["labels"][i].clone()
-            pred_label = logits.argmax(dim=-1)
+            pred_label = logits.softmax(dim=-1).argmax(dim=-1)
+            file_id = batch["id"][i].clone()
 
             output_id = current_id + i
 
@@ -156,6 +161,9 @@ class Inferencer(BaseTrainer):
             if self.save_path is not None:
                 # you can use safetensors or other lib here
                 torch.save(output, self.save_path / part / f"output_{output_id}.pth")
+                with open(self.csv_file, "a", newline="") as csvfile:
+                    writer = csv.writer(csvfile)
+                    writer.writerow([file_id, pred_label])
 
         return batch
 
