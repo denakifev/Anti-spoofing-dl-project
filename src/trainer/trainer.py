@@ -55,7 +55,7 @@ class Trainer(BaseTrainer):
             if hasattr(met, "is_accumulate") and met.is_accumulate:
                 preds = batch.get("data_object")
                 labels = batch.get("labels")
-                metrics.accumulate(met.name, preds, labels)
+                metrics.accumulate(preds, labels)
             else:
                 val = met(**batch)
                 metrics.update(met.name, val)
