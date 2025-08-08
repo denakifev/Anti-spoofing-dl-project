@@ -38,7 +38,6 @@ class MetricTracker:
         for path in [self._pred_path, self._label_path]:
             if os.path.exists(path):
                 os.remove(path)
-                print(f"Removed {path}")
 
     def update(self, key, value, n=1):
         """
