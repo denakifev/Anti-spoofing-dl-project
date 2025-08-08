@@ -242,11 +242,11 @@ class BaseTrainer:
                 break
 
         logs = last_train_metrics
-
+        self.train_metrics.reset()
         # Run val metrics
         val_logs = self._evaluation_epoch(epoch, "val", self.validation_dataloader)
         logs.update(**{f"val_{name}": value for name, value in val_logs.items()})
-
+        self.evaluation_metrics.reset()
         return logs
 
     def _evaluation_epoch(self, epoch, part, dataloader):
@@ -269,6 +269,7 @@ class BaseTrainer:
                 desc=part,
                 total=len(dataloader),
             ):
+                torch.cuda.empty_cache()
                 batch = self.process_batch(
                     batch,
                     metrics=self.evaluation_metrics,

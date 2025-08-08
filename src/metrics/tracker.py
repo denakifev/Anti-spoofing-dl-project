@@ -69,8 +69,10 @@ class MetricTracker:
         return self._data.average[key]
 
     def accumulate(self, preds, labels=None):
-        self._pred_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
-        self._label_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
+        if self._pred_file is None or self._label_file is None:
+            self._pred_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
+            self._label_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
+
         torch.save(preds.detach().cpu(), self._pred_file)
         if labels is not None:
             torch.save(labels.detach().cpu(), self._label_file)
@@ -120,20 +122,7 @@ class MetricTracker:
         for key in self._data.index:
             metric = self.metric_funcs.get(key, None)
             if metric is not None and getattr(metric, "is_accumulate", False):
-                preds = self._accumulate_preds.get(key, [])
-                labels = self._accumulate_labels.get(key, [])
-
-                if preds and labels:
-                    preds = torch.cat(preds)
-                    labels = torch.cat(labels)
-                    value = metric(preds=preds, labels=labels)
-                else:
-                    value = float("nan")
-
-                results[key] = value
-                self._data.loc[key, "total"] = value
-                self._data.loc[key, "counts"] = 1
-                self._data.loc[key, "average"] = value
+                results[key] = self.compute_accumulated(key, metric)
             else:
                 results[key] = self._data.average[key]
 
