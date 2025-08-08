@@ -24,30 +24,36 @@ class ASVspoofDataset(BaseDataset):
         index = self._make_index(protocol_path, audio_base_path)
 
         self.use_stft = use_stft
-        self.stft_params = stft_params
+        self.stft_params = stft_params or {}
 
         if self.use_stft:
-            self.window = torch.hamming_window(stft_params["win_length"])
+            window_fn = self.stft_params.get("window", "blackman")
+            self.window = torchaudio.functional.get_window_fn(window_fn)(
+                self.stft_params["win_length"]
+            )
 
         super().__init__(index=index, **kwargs)
 
     def load_object(self, path):
-        obj, _ = torchaudio.load(path)
+        waveform, _ = torchaudio.load(path)
 
         if self.use_stft:
-            window = torch.hamming_window(self.stft_params["win_length"])
-            stft_complex = torch.stft(
-                obj,
+            stft_output = torch.stft(
+                waveform,
                 n_fft=self.stft_params["n_fft"],
                 hop_length=self.stft_params["hop_length"],
                 win_length=self.stft_params["win_length"],
-                window=window,
-                return_complex=True,
+                window=self.window,
+                return_complex=self.stft_params.get("return_complex", True),
             )
-            obj = stft_complex.abs() ** self.stft_params.get("power", 2)
 
-        obj = self._pad_with_random_or_crop(obj)
-        return obj
+            magnitude = stft_output.abs()
+        else:
+            magnitude = waveform
+
+        magnitude = magnitude[..., :600]
+        magnitude = self._pad_or_crop_time(magnitude, target_time=600)
+        return magnitude
 
     def _make_index(self, protocol_path, audio_base_path):
         index = []
@@ -62,26 +68,18 @@ class ASVspoofDataset(BaseDataset):
                     {
                         "path": audio_path,
                         "label": label,
+                        "id": file_id,
                     }
                 )
 
         return index
 
-    def _pad_with_random_or_crop(self, tensor, target_height=863, target_width=600):
-        c, h, w = tensor.shape
+    def _pad_with_random_or_crop(self, tensor, target_time=600):
+        c, f, t = tensor.shape
 
-        output = torch.rand(
-            (c, target_height, target_width), dtype=tensor.dtype, device=tensor.device
+        output = torch.zeros(
+            (c, f, target_time), dtype=tensor.dtype, device=tensor.device
         )
-
-        insert_h = min(h, target_height)
-        insert_w = min(w, target_width)
-
-        start_h = (target_height - insert_h) // 2
-        start_w = 0
-
-        output[:, start_h : start_h + insert_h, start_w : start_w + insert_w] = tensor[
-            :, :insert_h, :insert_w
-        ]
-
+        length = min(t, target_time)
+        output[:, :, :length] = tensor[:, :, :length]
         return output

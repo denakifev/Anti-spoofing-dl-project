@@ -26,11 +26,10 @@ test:
   audio_folder: "ASVspoof2019_LA_eval/flac"
 
 stft_params:
-  n_fft: 1024
-  hop_length: 160
-  win_length: 400
-  window: "hamming"
-  return_complex: true
-  power: 2
+  n_fft: 1724
+  hop_length: 130
+  win_length: 1724
+  window: "blackman"
+  return_complex: True
 
 la_root: "/kaggle/input/asvpoof-2019-dataset/LA/LA"
