@@ -1,3 +1,6 @@
+import os
+import tempfile
+
 import numpy as np
 import pandas as pd
 import torch
@@ -21,8 +24,8 @@ class MetricTracker:
         self._data = pd.DataFrame(index=keys, columns=["total", "counts", "average"])
         self.metric_funcs = {m.name: m for m in (metric_funcs or [])}
 
-        self._accumulate_preds = {key: [] for key in keys}
-        self._accumulate_labels = {key: [] for key in keys}
+        self._pred_file = None
+        self._label_file = None
 
         self.reset()
 
@@ -32,9 +35,12 @@ class MetricTracker:
         """
         for col in self._data.columns:
             self._data[col].values[:] = 0
-        for key in self._accumulate_preds:
-            self._accumulate_preds[key] = []
-            self._accumulate_labels[key] = []
+        if self._pred_file:
+            self._pred_file.close()
+            os.remove(self._pred_file.name)
+        if self._label_file:
+            self._label_file.close()
+            os.remove(self._label_file.name)
 
     def update(self, key, value, n=1):
         """
@@ -62,22 +68,13 @@ class MetricTracker:
         """
         return self._data.average[key]
 
-    def accumulate(self, key, preds, labels=None):
-        self._accumulate_preds[key].append(preds.detach().cpu())
+    def accumulate(self, preds, labels=None):
+        torch.save(preds.detach().cpu(), self._pred_file)
         if labels is not None:
-            self._accumulate_labels[key].append(labels.detach().cpu())
+            torch.save(labels.detach().cpu(), self._label_file)
 
     def compute_accumulated(self, key, metric_func):
-        all_preds = (
-            np.concatenate(self._accumulate_preds[key])
-            if self._accumulate_preds[key]
-            else np.array([])
-        )
-        all_labels = (
-            np.concatenate(self._accumulate_labels[key])
-            if self._accumulate_labels[key]
-            else np.array([])
-        )
+        all_preds, all_labels = self.get_accumulated()
         if len(all_preds) == 0 or len(all_labels) == 0:
             value = float("nan")
         else:
@@ -86,6 +83,27 @@ class MetricTracker:
         self._data.loc[key, "counts"] = 1
         self._data.loc[key, "average"] = value
         return value
+
+    def get_accumulated(self):
+        self._pred_file.seek(0)
+        preds = []
+        try:
+            while True:
+                preds.append(torch.load(self._pred_file))
+        except EOFError:
+            pass
+        preds = torch.cat(preds)
+
+        self._label_file.seek(0)
+        labels = []
+        try:
+            while True:
+                labels.append(torch.load(self._label_file))
+        except EOFError:
+            pass
+        labels = torch.cat(labels)
+
+        return preds, labels
 
     def result(self):
         """
