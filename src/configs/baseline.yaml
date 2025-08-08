@@ -15,7 +15,7 @@ lr_scheduler:
   step_size: 1500
   gamma: 0.5
 loss_function:
-  _target_: src.loss.CrossEntopyLoss
+  _target_: src.loss.AMSoftmaxLoss
 trainer:
   log_step: 150
   n_epochs: 5
