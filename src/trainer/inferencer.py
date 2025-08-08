@@ -61,7 +61,7 @@ class Inferencer(BaseTrainer):
 
         # define dataloaders
         self.evaluation_dataloaders = {
-            k: v for k, v in dataloaders.items() if v == "test"
+            k: v for k, v in dataloaders.items() if k == "test"
         }
 
         # path definition
