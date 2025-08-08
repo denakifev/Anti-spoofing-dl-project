@@ -60,7 +60,9 @@ class Inferencer(BaseTrainer):
         self.batch_transforms = batch_transforms
 
         # define dataloaders
-        self.evaluation_dataloaders = {k: v for k, v in dataloaders.items()}
+        self.evaluation_dataloaders = {
+            k: v for k, v in dataloaders.items() if v == "test"
+        }
 
         # path definition
 

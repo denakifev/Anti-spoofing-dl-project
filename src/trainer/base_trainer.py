@@ -82,9 +82,7 @@ class BaseTrainer:
             self.train_dataloader = inf_loop(self.train_dataloader)
             self.epoch_len = epoch_len
 
-        self.evaluation_dataloaders = {
-            k: v for k, v in dataloaders.items() if k != "train"
-        }
+        self.validation_dataloader = dataloaders["val"]
 
         # define epochs
         self._last_epoch = 0  # required for saving on interruption
@@ -242,10 +240,9 @@ class BaseTrainer:
 
         logs = last_train_metrics
 
-        # Run val/test
-        for part, dataloader in self.evaluation_dataloaders.items():
-            val_logs = self._evaluation_epoch(epoch, part, dataloader)
-            logs.update(**{f"{part}_{name}": value for name, value in val_logs.items()})
+        # Run val metrics
+        val_logs = self._evaluation_epoch(epoch, "val", self.validation_dataloader)
+        logs.update(**{f"val_{name}": value for name, value in val_logs.items()})
 
         return logs
 
