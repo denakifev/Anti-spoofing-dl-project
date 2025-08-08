@@ -16,6 +16,8 @@ lr_scheduler:
   gamma: 0.5
 loss_function:
   _target_: src.loss.AMSoftmaxLoss
+  in_features: 62752
+  num_classes: 2
 trainer:
   log_step: 150
   n_epochs: 5
