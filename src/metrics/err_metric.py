@@ -30,9 +30,9 @@ def compute_det_curve(target_scores, nontarget_scores):
         np.arange(1, n_scores + 1) - tar_trial_sums
     )
 
-    frr = np.concatenate((np.atleast_1d(0), tar_trial_sums / target_scores.size))
+    frr = np.concatenate((np.atleast_1d(0), tar_trial_sums / target_scores.size(0)))
     far = np.concatenate(
-        (np.atleast_1d(1), nontarget_trial_sums / nontarget_scores.size)
+        (np.atleast_1d(1), nontarget_trial_sums / nontarget_scores.size(0))
     )
 
     return frr, far
