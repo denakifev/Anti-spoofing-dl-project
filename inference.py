@@ -52,7 +52,7 @@ def main(config):
         metrics=metrics,
         skip_model_load=False,
     )
-
+    print("Running inference...")
     logs = inferencer.run_inference()
 
     for part in logs.keys():
