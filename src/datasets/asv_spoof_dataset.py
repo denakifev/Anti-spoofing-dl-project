@@ -27,10 +27,7 @@ class ASVspoofDataset(BaseDataset):
         self.stft_params = stft_params or {}
 
         if self.use_stft:
-            window_fn = self.stft_params.get("window", "blackman")
-            self.window = torchaudio.functional.get_window_fn(window_fn)(
-                self.stft_params["win_length"]
-            )
+            self.window = torch.blackman_window(self.stft_params["win_length"])
 
         super().__init__(index=index, **kwargs)
 

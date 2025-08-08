@@ -29,7 +29,6 @@ stft_params:
   n_fft: 1724
   hop_length: 130
   win_length: 1724
-  window: "blackman"
   return_complex: True
 
 la_root: "/kaggle/input/asvpoof-2019-dataset/LA/LA"
