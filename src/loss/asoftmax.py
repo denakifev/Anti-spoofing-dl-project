@@ -28,4 +28,4 @@ class AMSoftmaxLoss(nn.Module):
 
         loss = F.cross_entropy(scaled_logits, labels)
 
-        return {"loss": loss}
+        return {"loss": loss, "logits": scaled_logits}
