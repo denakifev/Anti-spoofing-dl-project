@@ -65,7 +65,7 @@ class MetricTracker:
     def accumulate(self, key, preds, labels=None):
         self._accumulate_preds[key].append(preds.detach().cpu())
         if labels is not None:
-            self._accumulate_labels[key].append(labels.detachU().cpu())
+            self._accumulate_labels[key].append(labels.detach().cpu())
 
     def compute_accumulated(self, key, metric_func):
         all_preds = (
