@@ -39,8 +39,8 @@ def compute_det_curve(target_scores, nontarget_scores):
 
 
 def compute_eer(pred, ground_truth):
-    pred = np.asarray(pred)
-    ground_truth = np.asarray(ground_truth)
+    pred = pred.cpu().numpy()
+    ground_truth = ground_truth.cpu().numpy()
 
     bonafide_scores = pred[ground_truth == 1]
     other_scores = pred[ground_truth == 0]
