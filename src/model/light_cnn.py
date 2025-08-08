@@ -3,7 +3,7 @@ from torch import nn
 
 
 class LightCNN(nn.Module):
-    def __init__(self, conv_blocks, max_pooling_conf, mlp1_conf, mlp2_conf):
+    def __init__(self, conv_blocks, max_pooling_conf, mlp1_conf):
         super().__init__()
         self.conv_blocks = nn.ModuleList(
             [
