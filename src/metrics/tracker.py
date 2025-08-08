@@ -1,7 +1,3 @@
-import os
-import tempfile
-
-import numpy as np
 import pandas as pd
 import torch
 
@@ -24,8 +20,8 @@ class MetricTracker:
         self._data = pd.DataFrame(index=keys, columns=["total", "counts", "average"])
         self.metric_funcs = {m.name: m for m in (metric_funcs or [])}
 
-        self._pred_path = os.path.join("/kaggle/working", "preds.raw")
-        self._label_path = os.path.join("/kaggle/working", "labels.raw")
+        self._preds = []
+        self._labels = []
 
         self.reset()
 
@@ -35,9 +31,8 @@ class MetricTracker:
         """
         for col in self._data.columns:
             self._data[col].values[:] = 0
-        for path in [self._pred_path, self._label_path]:
-            if os.path.exists(path):
-                os.remove(path)
+        self._preds = []
+        self._labels = []
 
     def update(self, key, value, n=1):
         """
@@ -66,17 +61,16 @@ class MetricTracker:
         return self._data.average[key]
 
     def accumulate(self, preds, labels=None):
-        preds = preds.detach().cpu().to(torch.float32).flatten()
-        with open(self._pred_path, "ab") as f:
-            f.write(preds.numpy().tobytes())
-
+        self._preds.append(preds)
         if labels is not None:
-            labels = labels.detach().cpu().to(torch.float32).flatten()
-            with open(self._label_path, "ab") as f:
-                f.write(labels.numpy().tobytes())
+            self._labels.append(labels)
 
     def compute_accumulated(self, key, metric_func):
-        all_preds, all_labels = self.get_accumulated()
+        all_preds, all_labels = (
+            torch.cat(self._preds, dim=0).cpu().numpy(),
+            torch.cat(self._labels, dim=0).cpu().numpy(),
+        )
+
         if len(all_preds) == 0 or len(all_labels) == 0:
             value = float("nan")
         else:
@@ -85,35 +79,6 @@ class MetricTracker:
         self._data.loc[key, "counts"] = 1
         self._data.loc[key, "average"] = value
         return value
-
-    def get_accumulated(self):
-        preds = torch.frombuffer(
-            open(self._pred_path, "rb").read(), dtype=torch.float32
-        )
-        labels = torch.frombuffer(
-            open(self._label_path, "rb").read(), dtype=torch.float32
-        )
-
-        return preds, labels
-
-    def result(self):
-        """
-        Return average value of each metric.
-
-        Returns:
-            average_metrics (dict): dict, containing average metrics
-                for each metric name.
-        """
-        results = {}
-
-        for key in self._data.index:
-            metric = self.metric_funcs.get(key, None)
-            if metric is not None and getattr(metric, "is_accumulate", False):
-                results[key] = self.compute_accumulated(key, metric)
-            else:
-                results[key] = self._data.average[key]
-
-        return results
 
     def keys(self):
         """
