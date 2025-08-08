@@ -105,7 +105,7 @@ class MLPblock(nn.Module):
         if self.fc.bias is not None:
             nn.init.constant_(self.fc.bias, 0)
         self.mfm = MFM()
-        self.dropout = nn.Dropout(0.75)
+        self.dropout = nn.Dropout(0.3)
         self.bn = None
         if use_batchnorm:
             self.bn = nn.BatchNorm1d(out_features // 2)
