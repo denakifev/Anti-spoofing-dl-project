@@ -12,13 +12,13 @@ optimizer:
   eps: 1e-8
 lr_scheduler:
   _target_: torch.optim.lr_scheduler.StepLR
-  step_size: 5
+  step_size: 1000
   gamma: 0.5
 loss_function:
   _target_: src.loss.CrossEntopyLoss
 trainer:
   log_step: 50
-  n_epochs: 10
+  n_epochs: 5
   device_tensors: ["data_object", "labels"] # which tensors should be on device (ex. GPU)
   resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml
   device: auto # device name or "auto"

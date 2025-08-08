@@ -33,4 +33,4 @@ stft_params:
   return_complex: true
   power: 2
 
-la_root: "/la_root"
+la_root: "/kaggle/input/asvpoof-2019-dataset/LA/LA"
