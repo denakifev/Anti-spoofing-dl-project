@@ -69,6 +69,8 @@ class MetricTracker:
         return self._data.average[key]
 
     def accumulate(self, preds, labels=None):
+        self._pred_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
+        self._label_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
         torch.save(preds.detach().cpu(), self._pred_file)
         if labels is not None:
             torch.save(labels.detach().cpu(), self._label_file)
