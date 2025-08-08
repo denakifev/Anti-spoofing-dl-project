@@ -91,6 +91,7 @@ class Inferencer(BaseTrainer):
                 for the part_name partition.
         """
         part_logs = {}
+        print(self.evaluation_dataloaders.items())
         for part, dataloader in self.evaluation_dataloaders.items():
             logs = self._inference_part(part, dataloader)
             part_logs[part] = logs
