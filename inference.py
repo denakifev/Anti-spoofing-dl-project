@@ -31,7 +31,7 @@ def main(config):
 
     # setup data_loader instances
     dataloaders = get_dataloaders(config, device)
-
+    print(dataloaders)
     # build model architecture, then print to console
     model = instantiate(config.model).to(device)
     print(model)
