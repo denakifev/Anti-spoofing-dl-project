@@ -20,10 +20,11 @@ class MetricTracker:
         self.writer = writer
         self._data = pd.DataFrame(index=keys, columns=["total", "counts", "average"])
         self.metric_funcs = {m.name: m for m in (metric_funcs or [])}
-        self.reset()
 
         self._accumulate_preds = {key: [] for key in keys}
         self._accumulate_labels = {key: [] for key in keys}
+
+        self.reset()
 
     def reset(self):
         """
