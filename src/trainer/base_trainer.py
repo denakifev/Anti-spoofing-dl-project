@@ -120,11 +120,14 @@ class BaseTrainer:
             "grad_norm",
             *[m.name for m in self.metrics["train"]],
             writer=self.writer,
+            metric_funcs=self.metrics["train"],
         )
+
         self.evaluation_metrics = MetricTracker(
             *self.config.writer.loss_names,
             *[m.name for m in self.metrics["inference"]],
             writer=self.writer,
+            metric_funcs=self.metrics["inference"],
         )
 
         # define checkpoint dir and init everything if required

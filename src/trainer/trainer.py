@@ -52,7 +52,14 @@ class Trainer(BaseTrainer):
             metrics.update(loss_name, batch[loss_name].item())
 
         for met in metric_funcs:
-            metrics.update(met.name, met(**batch))
+            if hasattr(met, "is_accumulate") and met.is_accumulate:
+                preds = batch.get("data_object")
+                labels = batch.get("labels")
+                metrics.accumulate(met.name, preds, labels)
+            else:
+                val = met(**batch)
+                metrics.update(met.name, val)
+
         return batch
 
     def _log_batch(self, batch_idx, batch, mode="train"):
