@@ -15,11 +15,9 @@ lr_scheduler:
   step_size: 1500
   gamma: 0.5
 loss_function:
-  _target_: src.loss.AMSoftmaxLoss
-  in_features: 80
-  num_classes: 2
+  _target_: src.loss.CrossEntropyLoss
 trainer:
-  log_step: 150
+  log_step: 100
   n_epochs: 5
   device_tensors: ["data_object", "labels"] # which tensors should be on device (ex. GPU)
   resume_from: null # null or path to the checkpoint dir with *.pth and config.yaml
