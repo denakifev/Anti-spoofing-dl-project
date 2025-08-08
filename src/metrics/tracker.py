@@ -24,8 +24,8 @@ class MetricTracker:
         self._data = pd.DataFrame(index=keys, columns=["total", "counts", "average"])
         self.metric_funcs = {m.name: m for m in (metric_funcs or [])}
 
-        self._pred_file = None
-        self._label_file = None
+        self._pred_path = os.path.join("/kaggle/working", "preds.raw")
+        self._label_path = os.path.join("/kaggle/working", "labels.raw")
 
         self.reset()
 
@@ -35,12 +35,9 @@ class MetricTracker:
         """
         for col in self._data.columns:
             self._data[col].values[:] = 0
-        if self._pred_file:
-            self._pred_file.close()
-            os.remove(self._pred_file.name)
-        if self._label_file:
-            self._label_file.close()
-            os.remove(self._label_file.name)
+        for path in [self._pred_path, self._label_path]:
+            if os.path.exists(path):
+                os.remove(path)
 
     def update(self, key, value, n=1):
         """
@@ -69,15 +66,14 @@ class MetricTracker:
         return self._data.average[key]
 
     def accumulate(self, preds, labels=None):
-        if self._pred_file is None or self._label_file is None:
-            self._pred_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
-            self._label_file = tempfile.NamedTemporaryFile(mode="wb+", delete=False)
+        preds = preds.detach().cpu().to(torch.float32).flatten()
+        with open(self._pred_path, "ab") as f:
+            f.write(preds.numpy().tobytes())
 
-        self._pred_file.seek(0, os.SEEK_END)
-        self._label_file.seek(0, os.SEEK_END)
-        torch.save(preds.detach().cpu(), self._pred_file)
         if labels is not None:
-            torch.save(labels.detach().cpu(), self._label_file)
+            labels = labels.detach().cpu().to(torch.float32).flatten()
+            with open(self._label_path, "ab") as f:
+                f.write(labels.numpy().tobytes())
 
     def compute_accumulated(self, key, metric_func):
         all_preds, all_labels = self.get_accumulated()
@@ -91,23 +87,12 @@ class MetricTracker:
         return value
 
     def get_accumulated(self):
-        self._pred_file.seek(0)
-        preds = []
-        try:
-            while True:
-                preds.append(torch.load(self._pred_file))
-        except EOFError:
-            pass
-        preds = torch.cat(preds)
-
-        self._label_file.seek(0)
-        labels = []
-        try:
-            while True:
-                labels.append(torch.load(self._label_file))
-        except EOFError:
-            pass
-        labels = torch.cat(labels)
+        preds = torch.frombuffer(
+            open(self._pred_path, "rb").read(), dtype=torch.float32
+        )
+        labels = torch.frombuffer(
+            open(self._label_path, "rb").read(), dtype=torch.float32
+        )
 
         return preds, labels
 
