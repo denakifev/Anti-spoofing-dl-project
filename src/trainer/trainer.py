@@ -51,12 +51,10 @@ class Trainer(BaseTrainer):
         for loss_name in self.config.writer.loss_names:
             metrics.update(loss_name, batch[loss_name].item())
 
+        metrics.accumulate(batch["data_object"], batch.get("labels"))
+        print(batch["data_object"].shape, batch["labels"].shape)
         for met in metric_funcs:
-            if hasattr(met, "is_accumulate") and met.is_accumulate:
-                preds = batch.get("data_object")
-                labels = batch.get("labels")
-                metrics.accumulate(preds, labels)
-            else:
+            if not hasattr(met, "is_accumulate") or not met.is_accumulate:
                 val = met(**batch)
                 metrics.update(met.name, val)
 
