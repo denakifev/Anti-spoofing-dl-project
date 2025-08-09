@@ -149,7 +149,7 @@ class Inferencer(BaseTrainer):
             logits = batch["logits"][i].clone()
             label = batch["labels"][i].clone()
             pred_label = logits.softmax(dim=-1).argmax(dim=-1)
-            file_id = batch["id"][i].clone()
+            file_id = batch["id"][i]
 
             output_id = current_id + i
 
