@@ -148,7 +148,7 @@ class Inferencer(BaseTrainer):
             # https://github.com/pytorch/pytorch/issues/1995
             logits = batch["logits"][i].clone()
             label = batch["labels"][i].clone()
-            pred_label = logits.softmax(dim=-1).argmax(dim=-1)
+            pred_label = logits.softmax(dim=-1)[1]
             file_id = batch["id"][i]
 
             output_id = current_id + i
@@ -163,7 +163,7 @@ class Inferencer(BaseTrainer):
                 torch.save(output, self.save_path / part / f"output_{output_id}.pth")
                 with open(self.csv_file, "a", newline="") as csvfile:
                     writer = csv.writer(csvfile)
-                    writer.writerow([file_id, pred_label])
+                    writer.writerow([file_id, pred_label.item()])
 
         return batch
 
