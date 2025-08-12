@@ -70,7 +70,7 @@ class Inferencer(BaseTrainer):
 
         self.save_path = save_path
         if self.save_path is not None:
-            self.csv_file = self.save_path / "daakifev.csv"
+            self.csv_file = self.save_path / "model_prediction_labels.csv"
 
         # define metrics
         self.metrics = metrics
